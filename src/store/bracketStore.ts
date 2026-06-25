@@ -37,6 +37,7 @@ type BracketStore = {
   lastUpdated: Date | null
   dataSource: 'manual' | 'snapshot' | 'initial'
   selectedGroup: GroupLetter | null
+  thirdPlacePanelOpen: boolean
   schemes: SavedScheme[]
   activeSchemeId: string | null
 
@@ -59,6 +60,7 @@ type BracketStore = {
   clearKnockout: () => void
   recompute: () => void
   setSelectedGroup: (group: GroupLetter | null) => void
+  setThirdPlacePanelOpen: (open: boolean) => void
 }
 
 function deriveBracketState(
@@ -139,6 +141,7 @@ function buildInitialState(): Omit<
   | 'clearKnockout'
   | 'recompute'
   | 'setSelectedGroup'
+  | 'setThirdPlacePanelOpen'
 > {
   const { schemes, activeSchemeId } = loadSchemesState()
   const { simulation } = loadActiveSimulation()
@@ -149,6 +152,7 @@ function buildInitialState(): Omit<
       schemes,
       activeSchemeId,
       selectedGroup: null,
+      thirdPlacePanelOpen: true,
     }
   }
 
@@ -157,6 +161,7 @@ function buildInitialState(): Omit<
     schemes,
     activeSchemeId: null,
     selectedGroup: null,
+    thirdPlacePanelOpen: true,
   }
 }
 
@@ -182,6 +187,8 @@ export const useBracketStore = create<BracketStore>((set, get) => ({
   ...buildInitialState(),
 
   setSelectedGroup: (group) => set({ selectedGroup: group }),
+
+  setThirdPlacePanelOpen: (open) => set({ thirdPlacePanelOpen: open }),
 
   setStandings: (standings, source = 'snapshot', matchResults = SNAPSHOT_MATCH_RESULTS) => {
     set((s) => {
@@ -306,6 +313,7 @@ export const useBracketStore = create<BracketStore>((set, get) => ({
       schemes: get().schemes,
       activeSchemeId: null,
       selectedGroup: null,
+      thirdPlacePanelOpen: true,
     })
   },
 

@@ -9,6 +9,7 @@ type CardId = 'analysis' | 'third'
 
 export function RightSidebar() {
   const selectedGroup = useBracketStore((s) => s.selectedGroup)
+  const setThirdPlacePanelOpen = useBracketStore((s) => s.setThirdPlacePanelOpen)
   const analysis = useGroupAnalysis(selectedGroup)
 
   const [openCard, setOpenCard] = useState<CardId>('third')
@@ -16,6 +17,10 @@ export function RightSidebar() {
   useEffect(() => {
     setOpenCard(selectedGroup ? 'analysis' : 'third')
   }, [selectedGroup])
+
+  useEffect(() => {
+    setThirdPlacePanelOpen(openCard === 'third')
+  }, [openCard, setThirdPlacePanelOpen])
 
   function selectCard(id: CardId) {
     setOpenCard(id)

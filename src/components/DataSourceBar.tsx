@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { SNAPSHOT_AS_OF } from '../data/wc2026Snapshot'
+import { formatSnapshotAsOf } from '../data/wc2026Snapshot'
 import { useBracketStore } from '../store/bracketStore'
 
 type PanelMode = 'save' | 'saveAs' | 'rename' | null
@@ -100,7 +100,7 @@ export function DataSourceBar() {
     <header className="data-bar">
       <div className="data-status">
         <span className="status-dot snapshot" />
-        <span>赛果快照 · {SNAPSHOT_AS_OF}</span>
+        <span>赛果快照 · {formatSnapshotAsOf()}</span>
         {isSimulating && !activeScheme && (
           <span className="source-tag muted-tag">有未保存改动</span>
         )}

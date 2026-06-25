@@ -2,8 +2,26 @@ import type { GroupMatchResult, TeamStanding } from '../engine/types'
 import { createInitialStandings } from './draw'
 import fifaRanks from './fifa-rankings.json'
 
-/** 数据来源：Wikipedia / FIFA / ESPN，截至 2026-06-25（A/B/C 组第三轮结束） */
-export const SNAPSHOT_AS_OF = '2026-06-25'
+/** 数据来源：Wikipedia / FIFA / ESPN，截至 2026-06-25 22:00 北京时间（A/B/C 组第三轮结束） */
+export const SNAPSHOT_TIMEZONE = 'Asia/Shanghai'
+export const SNAPSHOT_AS_OF = '2026-06-25T22:00:00+08:00'
+
+export function formatSnapshotAsOf(iso = SNAPSHOT_AS_OF): string {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return iso
+
+  const stamp = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: SNAPSHOT_TIMEZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(d)
+
+  return `${stamp} 北京时间 (UTC+8)`
+}
 
 type TeamStats = {
   played: number

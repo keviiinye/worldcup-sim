@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { lookupAnnexC } from './annexLookup'
 import { R32_TEMPLATE } from './buildR32Bracket'
-import { getGroupKnockoutPaths, getSlotHighlightRank } from './groupKnockoutPaths'
+import { getGroupKnockoutPaths, getParticipantHighlightRank, getSlotHighlightRank } from './groupKnockoutPaths'
 import type { GroupLetter, ThirdPlaceEntry } from './types'
 import { GROUP_LETTERS } from './types'
 
@@ -76,5 +76,22 @@ describe('getSlotHighlightRank', () => {
     expect(getSlotHighlightRank('3C', 'C')).toBe(3)
     expect(getSlotHighlightRank('1A', 'B')).toBeNull()
     expect(getSlotHighlightRank(undefined, 'A')).toBeNull()
+  })
+})
+
+describe('getParticipantHighlightRank', () => {
+  it('highlights advancing third place from selected group', () => {
+    expect(
+      getParticipantHighlightRank(
+        { label: '3rd', isThirdPlace: true, team: { group: 'A' } },
+        'A',
+      ),
+    ).toBe(3)
+    expect(
+      getParticipantHighlightRank(
+        { label: '3rd', isThirdPlace: true, team: { group: 'B' } },
+        'A',
+      ),
+    ).toBeNull()
   })
 })

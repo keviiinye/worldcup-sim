@@ -1,6 +1,6 @@
 import type { KnockoutMatch, KnockoutParticipant, GroupLetter } from '../engine/types'
 import type { TeamRank } from '../engine/tiebreakers'
-import { getSlotHighlightRank } from '../engine/groupKnockoutPaths'
+import { getParticipantHighlightRank } from '../engine/groupKnockoutPaths'
 import {
   isKnockoutSlotLocked,
   knockoutSlotLockHint,
@@ -141,14 +141,10 @@ function BracketMatch({
     return autoLockedTeamRanks[participant.team.teamId] != null
   }
 
-  const homeHighlight =
-    showSlotOrigin && match.home.type === 'team'
-      ? getSlotHighlightRank(match.home.label, selectedGroup)
-      : null
-  const awayHighlight =
-    showSlotOrigin && match.away.type === 'team'
-      ? getSlotHighlightRank(match.away.label, selectedGroup)
-      : null
+  function highlightRank(participant: KnockoutParticipant): 1 | 2 | 3 | null {
+    if (!showSlotOrigin || participant.type !== 'team') return null
+    return getParticipantHighlightRank(participant, selectedGroup)
+  }
 
   function isThirdAdvancing(participant: KnockoutParticipant): boolean {
     if (!thirdPlacePanelOpen || !showSlotOrigin) return false
@@ -166,7 +162,7 @@ function BracketMatch({
         onPick={canPick ? (id) => onPick(match.matchNo, id) : undefined}
         showSlotOrigin={showSlotOrigin}
         isRankLocked={isLocked(match.home)}
-        highlightRank={homeHighlight}
+        highlightRank={highlightRank(match.home)}
         highlightThirdAdvancing={isThirdAdvancing(match.home)}
       />
       <ParticipantRow
@@ -176,7 +172,7 @@ function BracketMatch({
         onPick={canPick ? (id) => onPick(match.matchNo, id) : undefined}
         showSlotOrigin={showSlotOrigin}
         isRankLocked={isLocked(match.away)}
-        highlightRank={awayHighlight}
+        highlightRank={highlightRank(match.away)}
         highlightThirdAdvancing={isThirdAdvancing(match.away)}
       />
     </div>
@@ -280,7 +276,7 @@ export function BracketTree() {
             {selectedGroup && (
               <span className="group-focus-hint">
                 {' '}
-                · 高亮 {selectedGroup} 组 32 强落位（金/绿/蓝 = 第 1/2/3 名）
+                · 高亮 {selectedGroup} 组 32 强落位（含出线第三名）
               </span>
             )}
             {thirdPlacePanelOpen && !selectedGroup && (

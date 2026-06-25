@@ -179,3 +179,24 @@ export function getSlotHighlightRank(
   if (group !== selectedGroup) return null
   return Number(rank) as 1 | 2 | 3
 }
+
+/** 32 强落位高亮：固定槽位 + 该组出线第三名（Annex 落位） */
+export function getParticipantHighlightRank(
+  participant: {
+    label: string
+    isThirdPlace: boolean
+    team: { group: GroupLetter }
+  },
+  selectedGroup: GroupLetter | null,
+): 1 | 2 | 3 | null {
+  const fromLabel = getSlotHighlightRank(participant.label, selectedGroup)
+  if (fromLabel) return fromLabel
+  if (
+    selectedGroup &&
+    participant.isThirdPlace &&
+    participant.team.group === selectedGroup
+  ) {
+    return 3
+  }
+  return null
+}

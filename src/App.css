@@ -786,19 +786,9 @@ button.secondary {
   border-bottom: 1px solid var(--border);
 }
 
-.col-r32 .bracket-team.group-slot-highlight.rank-1 {
-  box-shadow: inset 0 0 0 2px #ffd54f;
+.col-r32 .bracket-team.group-slot-highlight {
+  box-shadow: inset 0 0 0 2px var(--gold);
   background: rgba(255, 213, 79, 0.14);
-}
-
-.col-r32 .bracket-team.group-slot-highlight.rank-2 {
-  box-shadow: inset 0 0 0 2px #81c784;
-  background: rgba(129, 199, 132, 0.14);
-}
-
-.col-r32 .bracket-team.group-slot-highlight.rank-3 {
-  box-shadow: inset 0 0 0 2px #64b5f6;
-  background: rgba(100, 181, 246, 0.14);
 }
 
 .col-r32 .bracket-team.third-adv-focus {

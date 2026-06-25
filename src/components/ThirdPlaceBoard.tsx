@@ -14,12 +14,31 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { Fragment } from 'react'
+import {
+  isThirdPlaceStatsLocked,
+  mergeThirdPlaceOrderWithLocks,
+} from '../engine/thirdPlaceLock'
 import type { ThirdPlaceEntry } from '../engine/types'
 import { useBracketStore } from '../store/bracketStore'
 
+function DragGrip() {
+  return (
+    <svg className="drag-grip" viewBox="0 0 6 10" aria-hidden="true">
+      <circle cx="1.5" cy="2" r="1" fill="currentColor" />
+      <circle cx="4.5" cy="2" r="1" fill="currentColor" />
+      <circle cx="1.5" cy="5" r="1" fill="currentColor" />
+      <circle cx="4.5" cy="5" r="1" fill="currentColor" />
+      <circle cx="1.5" cy="8" r="1" fill="currentColor" />
+      <circle cx="4.5" cy="8" r="1" fill="currentColor" />
+    </svg>
+  )
+}
+
 function SortableThirdRow({ entry }: { entry: ThirdPlaceEntry }) {
+  const statsLocked = isThirdPlaceStatsLocked(entry)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: entry.teamId })
+    useSortable({ id: entry.teamId, disabled: statsLocked })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -27,20 +46,41 @@ function SortableThirdRow({ entry }: { entry: ThirdPlaceEntry }) {
     opacity: isDragging ? 0.5 : 1,
   }
 
+  const rowTitle = statsLocked
+    ? `${entry.name} · 小组战绩已锁定 · 相对顺位不可越界`
+    : `${entry.name} · 末轮未结束 · 拖拽模拟排名`
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`third-row ${entry.qualified ? 'qualified' : 'eliminated'}`}
+      className={`third-row ${entry.qualified ? 'third-row--advancing' : 'third-row--out'} ${statsLocked ? 'third-row--stats-locked' : 'third-row--open'}`}
+      title={rowTitle}
       {...attributes}
-      {...listeners}
+      {...(statsLocked ? {} : listeners)}
     >
-      <span className="rank">{entry.rankAmongThird}</span>
-      <span className="flag">{entry.flag ?? '🏳️'}</span>
-      <span className="name">{entry.name}</span>
-      <span className="group-tag">3{entry.group}</span>
-      <span className="stats">{entry.points}pts · {entry.gd >= 0 ? `+${entry.gd}` : entry.gd} GD</span>
-      <span className="badge">{entry.qualified ? '出线' : '淘汰'}</span>
+      <span className="third-col-leading" aria-label={`第 ${entry.rankAmongThird} 名`}>
+        <span className="rank-status-mark">
+          {statsLocked ? (
+            <span className="rank-lock-mark" aria-hidden="true">🔒</span>
+          ) : (
+            <span className="drag-handle" aria-hidden="true">
+              <DragGrip />
+            </span>
+          )}
+        </span>
+        <span className="rank-num">{entry.rankAmongThird}</span>
+      </span>
+      <span className="third-col-group">{entry.group}</span>
+      <span className="third-col-team">
+        <span className="flag">{entry.flag ?? '🏳️'}</span>
+        <span className="name">{entry.name}</span>
+      </span>
+      <span className="third-col-pts">{entry.points}</span>
+      <span className="third-col-gd">{entry.gd >= 0 ? `+${entry.gd}` : entry.gd}</span>
+      <span className={`third-status ${entry.qualified ? 'advancing' : 'out'}`}>
+        {entry.qualified ? '晋级' : '出局'}
+      </span>
     </div>
   )
 }
@@ -66,21 +106,38 @@ export function ThirdPlaceBoardContent() {
     const next = [...teamIds]
     const [moved] = next.splice(oldIndex, 1)
     next.splice(newIndex, 0, moved)
-    reorderThirdPlace(next)
+    reorderThirdPlace(mergeThirdPlaceOrderWithLocks(next, thirdPlace))
   }
 
   return (
     <div className="third-board-inner">
-      <p className="hint">
-        Annex C #{annexOption} · 出线: {advancing.join(', ')}
+      <p className="hint third-board-hint">
+        Annex C #{annexOption} · 出线组: {advancing.join(', ')} · 🔒 末轮已踢完
       </p>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={teamIds} strategy={verticalListSortingStrategy}>
-          {thirdPlace.map((entry) => (
-            <SortableThirdRow key={entry.teamId} entry={entry} />
-          ))}
-        </SortableContext>
-      </DndContext>
+      <div className="third-table">
+        <div className="third-table-head">
+          <span className="third-col-leading" aria-hidden="true" />
+          <span className="third-col-group">小组</span>
+          <span className="third-col-team">球队</span>
+          <span className="third-col-pts">积分</span>
+          <span className="third-col-gd">净胜球</span>
+          <span className="third-col-status">晋级情况</span>
+        </div>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={teamIds} strategy={verticalListSortingStrategy}>
+            {thirdPlace.map((entry) => (
+              <Fragment key={entry.teamId}>
+                {entry.rankAmongThird === 9 && (
+                  <div className="third-cut-line" aria-hidden="true">
+                    <span>晋级线 · 前 8 出线</span>
+                  </div>
+                )}
+                <SortableThirdRow entry={entry} />
+              </Fragment>
+            ))}
+          </SortableContext>
+        </DndContext>
+      </div>
     </div>
   )
 }

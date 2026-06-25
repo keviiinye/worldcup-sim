@@ -5,11 +5,11 @@ import { buildSnapshotStandings, SNAPSHOT_MATCH_RESULTS } from '../data/wc2026Sn
 describe('analyzeGroup', () => {
   const standings = buildSnapshotStandings()
 
-  it('returns played matches and round-3 fixtures for group A', () => {
+  it('returns all played matches for finished group A', () => {
     const a = analyzeGroup('A', standings, SNAPSHOT_MATCH_RESULTS)
-    expect(a.playedMatches).toHaveLength(4)
-    expect(a.remainingFixtures).toHaveLength(2)
-    expect(a.scenarioCount).toBe(9)
+    expect(a.playedMatches).toHaveLength(6)
+    expect(a.remainingFixtures).toHaveLength(0)
+    expect(a.scenarioCount).toBe(1)
   })
 
   it('locks Mexico at rank 1 in group A', () => {
@@ -34,8 +34,8 @@ describe('analyzeGroup', () => {
   })
 
   it('uses Chinese team names in insights', () => {
-    const a = analyzeGroup('A', standings, SNAPSHOT_MATCH_RESULTS)
-    expect(a.insights.some((line) => line.includes('墨西哥'))).toBe(true)
-    expect(a.insights.some((line) => line.includes('MEX'))).toBe(false)
+    const d = analyzeGroup('D', standings, SNAPSHOT_MATCH_RESULTS)
+    expect(d.insights.some((line) => line.includes('美国'))).toBe(true)
+    expect(d.insights.some((line) => line.includes('USA'))).toBe(false)
   })
 })

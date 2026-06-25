@@ -12,12 +12,10 @@ describe('buildGroupMatchdays', () => {
     expect(days.every((d) => d.matches.length === 2)).toBe(true)
   })
 
-  it('marks first two days played and third upcoming for group A', () => {
+  it('marks all matchdays played for finished group A', () => {
     const teams = standings.filter((t) => t.group === 'A')
     const days = buildGroupMatchdays('A', teams, SNAPSHOT_MATCH_RESULTS)
-    expect(days[0].matches.every((m) => m.status === 'played')).toBe(true)
-    expect(days[1].matches.every((m) => m.status === 'played')).toBe(true)
-    expect(days[2].matches.every((m) => m.status === 'upcoming')).toBe(true)
+    expect(days.every((d) => d.matches.every((m) => m.status === 'played'))).toBe(true)
   })
 
   it('uses actual home/away from results', () => {

@@ -2,8 +2,8 @@ import type { GroupMatchResult, TeamStanding } from '../engine/types'
 import { createInitialStandings } from './draw'
 import fifaRanks from './fifa-rankings.json'
 
-/** 数据来源：Wikipedia / FIFA，截至 2026-06-24（12 组第二轮均已结束） */
-export const SNAPSHOT_AS_OF = '2026-06-24'
+/** 数据来源：Wikipedia / FIFA / ESPN，截至 2026-06-25（A/B/C 组第三轮结束） */
+export const SNAPSHOT_AS_OF = '2026-06-25'
 
 type TeamStats = {
   played: number
@@ -17,20 +17,20 @@ type TeamStats = {
 
 export const SNAPSHOT_STATS: Record<string, TeamStats> = {
   // Group A
-  mex: { played: 2, won: 2, drawn: 0, lost: 0, gf: 3, ga: 0, points: 6 },
-  kor: { played: 2, won: 1, drawn: 0, lost: 1, gf: 2, ga: 2, points: 3 },
-  cze: { played: 2, won: 0, drawn: 1, lost: 1, gf: 2, ga: 3, points: 1 },
-  rsa: { played: 2, won: 0, drawn: 1, lost: 1, gf: 1, ga: 3, points: 1 },
+  mex: { played: 3, won: 3, drawn: 0, lost: 0, gf: 6, ga: 0, points: 9 },
+  rsa: { played: 3, won: 1, drawn: 1, lost: 1, gf: 2, ga: 3, points: 4 },
+  kor: { played: 3, won: 1, drawn: 0, lost: 2, gf: 2, ga: 3, points: 3 },
+  cze: { played: 3, won: 0, drawn: 1, lost: 2, gf: 2, ga: 6, points: 1 },
   // Group B
-  can: { played: 2, won: 1, drawn: 1, lost: 0, gf: 7, ga: 1, points: 4 },
-  sui: { played: 2, won: 1, drawn: 1, lost: 0, gf: 5, ga: 2, points: 4 },
-  bih: { played: 2, won: 0, drawn: 1, lost: 1, gf: 2, ga: 5, points: 1 },
-  qat: { played: 2, won: 0, drawn: 1, lost: 1, gf: 1, ga: 7, points: 1 },
+  sui: { played: 3, won: 2, drawn: 1, lost: 0, gf: 7, ga: 3, points: 7 },
+  can: { played: 3, won: 1, drawn: 1, lost: 1, gf: 7, ga: 3, points: 4 },
+  bih: { played: 3, won: 1, drawn: 1, lost: 1, gf: 5, ga: 6, points: 4 },
+  qat: { played: 3, won: 0, drawn: 1, lost: 2, gf: 2, ga: 10, points: 1 },
   // Group C
-  bra: { played: 2, won: 1, drawn: 1, lost: 0, gf: 4, ga: 1, points: 4 },
-  mar: { played: 2, won: 1, drawn: 1, lost: 0, gf: 2, ga: 1, points: 4 },
-  sco: { played: 2, won: 1, drawn: 0, lost: 1, gf: 1, ga: 1, points: 3 },
-  hai: { played: 2, won: 0, drawn: 0, lost: 2, gf: 0, ga: 4, points: 0 },
+  bra: { played: 3, won: 2, drawn: 1, lost: 0, gf: 7, ga: 1, points: 7 },
+  mar: { played: 3, won: 2, drawn: 1, lost: 0, gf: 6, ga: 3, points: 7 },
+  sco: { played: 3, won: 1, drawn: 0, lost: 2, gf: 1, ga: 4, points: 3 },
+  hai: { played: 3, won: 0, drawn: 0, lost: 3, gf: 2, ga: 8, points: 0 },
   // Group D
   usa: { played: 2, won: 2, drawn: 0, lost: 0, gf: 6, ga: 1, points: 6 },
   aus: { played: 2, won: 1, drawn: 0, lost: 1, gf: 2, ga: 2, points: 3 },
@@ -139,6 +139,15 @@ export const SNAPSHOT_MATCH_RESULTS: GroupMatchResult[] = [
   { homeTeamId: 'gha', awayTeamId: 'pan', homeGoals: 1, awayGoals: 0 },
   { homeTeamId: 'eng', awayTeamId: 'gha', homeGoals: 0, awayGoals: 0 },
   { homeTeamId: 'pan', awayTeamId: 'cro', homeGoals: 0, awayGoals: 1 },
+  // A — MD3
+  { homeTeamId: 'mex', awayTeamId: 'cze', homeGoals: 3, awayGoals: 0 },
+  { homeTeamId: 'rsa', awayTeamId: 'kor', homeGoals: 1, awayGoals: 0 },
+  // B — MD3
+  { homeTeamId: 'can', awayTeamId: 'sui', homeGoals: 1, awayGoals: 2 },
+  { homeTeamId: 'bih', awayTeamId: 'qat', homeGoals: 3, awayGoals: 1 },
+  // C — MD3
+  { homeTeamId: 'bra', awayTeamId: 'sco', homeGoals: 3, awayGoals: 0 },
+  { homeTeamId: 'mar', awayTeamId: 'hai', homeGoals: 4, awayGoals: 2 },
 ]
 
 export function buildSnapshotStandings(): TeamStanding[] {

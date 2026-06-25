@@ -1331,6 +1331,62 @@ button.secondary {
   white-space: nowrap;
 }
 
+.ratings-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.ratings-table.compact {
+  gap: 0.15rem;
+}
+
+.ratings-head,
+.ratings-row {
+  display: grid;
+  grid-template-columns: 1fr 2rem 2rem 2.25rem;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.ratings-head {
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+
+.ratings-head .ratings-col-metric {
+  text-align: center;
+}
+
+.ratings-row {
+  padding: 0.18rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.ratings-row:last-child {
+  border-bottom: none;
+}
+
+.ratings-col-team {
+  font-weight: 600;
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+.ratings-col-metric {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.ratings-col-metric.overall {
+  color: var(--gold);
+  font-weight: 700;
+}
+
 .rank-bar {
   display: flex;
   height: 0.35rem;

@@ -10,6 +10,7 @@ import {
 import { computeAutoLockedRanks } from './rankLock'
 import { buildGroupMatchdays, type MatchdaySchedule } from './groupMatchdays'
 import { buildGroupOutlook } from './groupOutlook'
+import { computeTournamentTeamRatings } from './teamRatings'
 
 export type MatchRecord = {
   homeTeamId: string
@@ -52,6 +53,9 @@ export type TeamAnalysis = {
   isRankLocked: boolean
   lockedRank?: 1 | 2 | 3 | 4
   fifaRank: number
+  attackRating: number
+  defenseRating: number
+  overallRating: number
 }
 
 export type GroupAnalysis = {
@@ -200,10 +204,13 @@ export function analyzeGroup(
     }
   })
 
+  const tournamentRatings = computeTournamentTeamRatings(standings)
+
   const teams: TeamAnalysis[] = groupTeams.map((t) => {
     const prob = probabilities[t.teamId]
     const { min, max } = computePointsRange(t, remainingRaw)
     const lockedRank = autoLocked[t.teamId]
+    const ratings = tournamentRatings.get(t.teamId)!
     return {
       teamId: t.teamId,
       code: t.code,
@@ -222,6 +229,9 @@ export function analyzeGroup(
       isRankLocked: lockedRank !== undefined,
       lockedRank,
       fifaRank: t.fifaRank,
+      attackRating: ratings.attack,
+      defenseRating: ratings.defense,
+      overallRating: ratings.overall,
     }
   })
 

@@ -97,6 +97,29 @@ export function GroupScheduleBody({ analysis }: { analysis: GroupAnalysis }) {
   )
 }
 
+export function GroupRatingsBody({ analysis }: { analysis: GroupAnalysis }) {
+  return (
+    <div className="ratings-table compact">
+      <div className="ratings-head">
+        <span className="ratings-col-team">球队</span>
+        <span className="ratings-col-metric">攻</span>
+        <span className="ratings-col-metric">防</span>
+        <span className="ratings-col-metric overall">综合</span>
+      </div>
+      {analysis.teams.map((t) => (
+        <div key={t.teamId} className="ratings-row">
+          <span className="ratings-col-team" title={t.name}>
+            {t.flag} {t.code}
+          </span>
+          <span className="ratings-col-metric">{t.attackRating}</span>
+          <span className="ratings-col-metric">{t.defenseRating}</span>
+          <span className="ratings-col-metric overall">{t.overallRating}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function GroupProbBody({ analysis }: { analysis: GroupAnalysis }) {
   return (
     <div className="prob-table compact">
@@ -127,6 +150,10 @@ export function GroupAnalysisBody({ analysis }: { analysis: GroupAnalysis }) {
       <section className="analysis-block">
         <h4 className="analysis-block-title">形势摘要</h4>
         <GroupInsightsBody analysis={analysis} />
+      </section>
+      <section className="analysis-block">
+        <h4 className="analysis-block-title">球队评级</h4>
+        <GroupRatingsBody analysis={analysis} />
       </section>
       <section className="analysis-block">
         <h4 className="analysis-block-title">顺位概率</h4>

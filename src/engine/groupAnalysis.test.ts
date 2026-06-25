@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { analyzeGroup } from './groupAnalysis'
+import { computeTournamentTeamRatings } from './teamRatings'
 import { buildSnapshotStandings, SNAPSHOT_MATCH_RESULTS } from '../data/wc2026Snapshot'
 
 describe('analyzeGroup', () => {
@@ -37,5 +38,17 @@ describe('analyzeGroup', () => {
     const d = analyzeGroup('D', standings, SNAPSHOT_MATCH_RESULTS)
     expect(d.insights.some((line) => line.includes('美国'))).toBe(true)
     expect(d.insights.some((line) => line.includes('USA'))).toBe(false)
+  })
+
+  it('includes tournament-wide numeric ratings', () => {
+    const a = analyzeGroup('A', standings, SNAPSHOT_MATCH_RESULTS)
+    const allRatings = computeTournamentTeamRatings(standings)
+    for (const t of a.teams) {
+      expect(t.attackRating).toBe(allRatings.get(t.teamId)!.attack)
+      expect(t.defenseRating).toBe(allRatings.get(t.teamId)!.defense)
+      expect(t.overallRating).toBe(allRatings.get(t.teamId)!.overall)
+    }
+    const allOverall = [...allRatings.values()].map((r) => r.overall)
+    expect(new Set(allOverall).size).toBeGreaterThanOrEqual(10)
   })
 })
